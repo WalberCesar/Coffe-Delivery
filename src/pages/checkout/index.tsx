@@ -5,12 +5,13 @@ import {
   Bank,
   Money,
 } from "phosphor-react";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useTheme } from "styled-components";
 import { CoffeCardShopSelected } from "../../components/CoffeCardShopSelected";
 import { FormAddress } from "../../components/FormAddress";
 import { TotalPrice } from "../../components/TotalPrice";
 import { CartContext } from "../../contexts/CartContext";
+import { CartItem } from "../../contexts/types";
 import {
   ContainerInformations,
   AdressInformation,
@@ -25,8 +26,16 @@ import {
 
 export function Checkout() {
   const theme = useTheme();
+  const { amountCoffeInCart, addToCart } = useContext(CartContext);
 
-  const {} = useContext(CartContext);
+  const [checkoutAmountCoffeInCart, setCheckoutAmountCoffeInCart] = useState<
+    CartItem[] | null
+  >([] as CartItem[]);
+
+  useEffect(() => {
+    setCheckoutAmountCoffeInCart(amountCoffeInCart);
+    console.log(amountCoffeInCart);
+  }, [addToCart, amountCoffeInCart]);
 
   return (
     <Container>

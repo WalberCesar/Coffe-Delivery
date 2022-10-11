@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useState } from "react";
+import { createContext, ReactNode, useEffect, useState } from "react";
 import { CartContextProviderProps, CartContextType, CartItem } from "./types";
 import { v4 as uuidv4 } from "uuid";
 
@@ -129,7 +129,13 @@ export function CartContextProvider({ children }: CartContextProviderProps) {
 
   const [coffeSelected, setCoffeSelected] = useState<CartItem>();
 
-  const [amountCoffeInCart, setAmountCoffeInCart] = useState<CartItem[]>([]);
+  const [amountCoffeInCart, setAmountCoffeInCart] = useState<CartItem[] | null>(
+    [] as CartItem[]
+  );
+
+  const [checkoutAmountCoffeInCart, setCheckoutAmountCoffeInCart] = useState<
+    CartItem[] | null
+  >([] as CartItem[]);
 
   function addToCart(
     coffeInformations: CartItem[],
@@ -150,12 +156,18 @@ export function CartContextProvider({ children }: CartContextProviderProps) {
         });
       });
 
-    setAmountCoffeInCart((state) => [...state, coffeSelected!]);
-    console.log(amountCoffeInCart);
+    setAmountCoffeInCart((state) => [...state!, coffeSelected!]);
   }
+  console.log(amountCoffeInCart);
 
   return (
-    <CartContext.Provider value={{ addToCart, coffeInformations }}>
+    <CartContext.Provider
+      value={{
+        addToCart,
+        coffeInformations,
+        amountCoffeInCart: amountCoffeInCart,
+      }}
+    >
       {children}
     </CartContext.Provider>
   );

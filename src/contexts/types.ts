@@ -16,6 +16,7 @@ export type CartContextType = {
     coffeQuantity: number
   ) => void;
   coffeInformations: CartItem[];
+  amountCoffeInCart: CartItem[] | null;
 };
 
 export type CartContextProviderProps = {
