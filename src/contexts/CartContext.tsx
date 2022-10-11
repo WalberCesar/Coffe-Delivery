@@ -158,7 +158,16 @@ export function CartContextProvider({ children }: CartContextProviderProps) {
 
     setAmountCoffeInCart((state) => [...state!, coffeSelected!]);
   }
-  console.log(amountCoffeInCart);
+  // console.log(amountCoffeInCart);
+
+  useEffect(() => {
+    async function setItemsCoffe() {
+      const dataSet = JSON.stringify(amountCoffeInCart);
+      await localStorage.setItem("@coffe_delivery", dataSet);
+    }
+
+    setItemsCoffe();
+  }, [amountCoffeInCart]);
 
   return (
     <CartContext.Provider

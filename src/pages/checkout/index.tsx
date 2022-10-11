@@ -33,9 +33,17 @@ export function Checkout() {
   >([] as CartItem[]);
 
   useEffect(() => {
-    setCheckoutAmountCoffeInCart(amountCoffeInCart);
-    console.log(amountCoffeInCart);
-  }, [addToCart, amountCoffeInCart]);
+    async function getItems() {
+      const response = await localStorage.getItem("@coffe_delivery");
+      const responseJSON = JSON.parse(response!);
+      setCheckoutAmountCoffeInCart(responseJSON);
+      // console.log(checkoutAmountCoffeInCart);
+    }
+
+    getItems();
+  }, [amountCoffeInCart, addToCart]);
+
+  console.log(checkoutAmountCoffeInCart);
 
   return (
     <Container>
@@ -81,7 +89,10 @@ export function Checkout() {
       </ContainerInformations>
 
       <CoffeShoppingList>
-        <CoffeCardShopSelected />
+        {checkoutAmountCoffeInCart?.map((item) => (
+          <CoffeCardShopSelected item={item} />
+        ))}
+
         <TotalPrice />
         <ButtonConfirmShopping>
           <label>CONFIRMAR PEDIDO</label>

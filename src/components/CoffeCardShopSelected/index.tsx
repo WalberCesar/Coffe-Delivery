@@ -10,8 +10,13 @@ import {
 } from "./style";
 
 import ImgCoffe from "../../assets/coffes/Coffee.svg";
+import { CartItem } from "../../contexts/types";
 
-export function CoffeCardShopSelected() {
+type Props = {
+  item: CartItem;
+};
+
+export function CoffeCardShopSelected({ item }: Props) {
   const theme = useTheme();
 
   return (
@@ -21,7 +26,7 @@ export function CoffeCardShopSelected() {
           <img src={ImgCoffe} />
 
           <div>
-            <p>EXPRESSO TRADICIONAL</p>
+            <p>{item.type}</p>
 
             <div>
               <CounterButton>
@@ -37,7 +42,7 @@ export function CoffeCardShopSelected() {
           </div>
         </Content>
 
-        <p>9.9</p>
+        <p>{item.price}</p>
       </Container>
 
       <Divider />
