@@ -133,11 +133,7 @@ export function CartContextProvider({ children }: CartContextProviderProps) {
     [] as CartItem[]
   );
 
-  const [checkoutAmountCoffeInCart, setCheckoutAmountCoffeInCart] = useState<
-    CartItem[] | null
-  >([] as CartItem[]);
-
-  function addToCart(
+  async function addToCart(
     coffeInformations: CartItem[],
     coffeId: string,
     coffeQuantity: number
@@ -150,24 +146,27 @@ export function CartContextProvider({ children }: CartContextProviderProps) {
           description: item.description,
           flavor: item.flavor,
           logoImg: item.logoImg,
-          price: item.price * coffeQuantity,
+          price: item.price! * coffeQuantity,
           quantity: coffeQuantity,
           type: item.type,
         });
       });
 
     setAmountCoffeInCart((state) => [...state!, coffeSelected!]);
+
+    const dataSet = await JSON.stringify(amountCoffeInCart);
+    await localStorage.setItem("@coffe_delivery", dataSet);
+    console.log(amountCoffeInCart);
   }
-  // console.log(amountCoffeInCart);
 
-  useEffect(() => {
-    async function setItemsCoffe() {
-      const dataSet = JSON.stringify(amountCoffeInCart);
-      await localStorage.setItem("@coffe_delivery", dataSet);
-    }
+  // useEffect(() => {
+  //   async function setItemsCoffe() {
+  //     const dataSet = JSON.stringify(amountCoffeInCart);
+  //     await localStorage.setItem("@coffe_delivery", dataSet);
+  //   }
 
-    setItemsCoffe();
-  }, [amountCoffeInCart]);
+  //   setItemsCoffe();
+  // }, [amountCoffeInCart]);
 
   return (
     <CartContext.Provider

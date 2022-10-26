@@ -28,22 +28,28 @@ export function Checkout() {
   const theme = useTheme();
   const { amountCoffeInCart, addToCart } = useContext(CartContext);
 
-  const [checkoutAmountCoffeInCart, setCheckoutAmountCoffeInCart] = useState<
-    CartItem[] | null
-  >([] as CartItem[]);
+  const [checkoutAmountCoffeInCart, setCheckoutAmountCoffeInCart] =
+    useState<CartItem[]>();
+
+  // async function getItems() {
+  //   const response = await localStorage.getItem("@coffe_delivery");
+  //   const responseJSON = await JSON.parse(response!);
+  //   setCheckoutAmountCoffeInCart(responseJSON);
+  // }
+
+  // useEffect(() => {
+  //   getItems();
+  // }, [getItems]);
 
   useEffect(() => {
     async function getItems() {
       const response = await localStorage.getItem("@coffe_delivery");
-      const responseJSON = JSON.parse(response!);
+      const responseJSON = await JSON.parse(response!);
       setCheckoutAmountCoffeInCart(responseJSON);
-      // console.log(checkoutAmountCoffeInCart);
     }
 
     getItems();
-  }, [amountCoffeInCart, addToCart]);
-
-  console.log(checkoutAmountCoffeInCart);
+  }, [addToCart, amountCoffeInCart]);
 
   return (
     <Container>
@@ -89,9 +95,15 @@ export function Checkout() {
       </ContainerInformations>
 
       <CoffeShoppingList>
-        {checkoutAmountCoffeInCart?.map((item) => (
-          <CoffeCardShopSelected item={item} />
-        ))}
+        {checkoutAmountCoffeInCart
+          ?.filter((item) => item !== null)
+          .map((item) => (
+            <CoffeCardShopSelected
+              item={item}
+              checkoutAmountCoffeInCart={checkoutAmountCoffeInCart}
+              setCheckoutAmountCoffeInCart={setCheckoutAmountCoffeInCart}
+            />
+          ))}
 
         <TotalPrice />
         <ButtonConfirmShopping>

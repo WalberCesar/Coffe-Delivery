@@ -38,7 +38,7 @@ export function CoffeCard({ informations, coffeInformations }: Props) {
   }
 
   function handleAddToCart() {
-    addToCart(coffeInformations, informations.id, quantity);
+    addToCart(coffeInformations, informations.id!, quantity);
   }
 
   return (
@@ -58,7 +58,7 @@ export function CoffeCard({ informations, coffeInformations }: Props) {
       <CoffeDescription>{informations.description}</CoffeDescription>
 
       <CoffeMenuContainer>
-        <CoffePrice>{(informations.price * quantity).toFixed(1)}</CoffePrice>
+        <CoffePrice>{(informations.price! * quantity).toFixed(1)}</CoffePrice>
         <CoffeMenuAmount>
           <CounterCoffeAmount>
             <Minus
@@ -73,7 +73,7 @@ export function CoffeCard({ informations, coffeInformations }: Props) {
           <ButtonCoffeCard>
             <ShoppingCart
               onClick={() =>
-                addToCart(coffeInformations, informations.id, quantity)
+                addToCart(coffeInformations, informations.id!, quantity)
               }
               size={22}
               color={theme.white}

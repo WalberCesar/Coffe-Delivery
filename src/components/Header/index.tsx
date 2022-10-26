@@ -12,10 +12,13 @@ import { CartContext } from "../../contexts/CartContext";
 import { useCart } from "../../contexts/useCart";
 
 export function Header() {
-  const {} = useCart();
+  const { amountCoffeInCart } = useCart();
 
   const theme = useTheme();
-  const counter = 0;
+  const filterValueNull = amountCoffeInCart?.filter(
+    (item) => item !== undefined
+  );
+  const counter = filterValueNull!.length - 1;
 
   return (
     <ContainerHeader>
@@ -26,7 +29,7 @@ export function Header() {
           <p>Mauá,SP</p>
         </div>
 
-        {counter > 0 ? (
+        {counter! > 0 ? (
           <ShoppingCartButton>
             <ShoppingCart
               weight="fill"
