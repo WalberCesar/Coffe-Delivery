@@ -10,9 +10,11 @@ import { useTheme } from "styled-components";
 import { useContext } from "react";
 import { CartContext } from "../../contexts/CartContext";
 import { useCart } from "../../contexts/useCart";
+import { useNavigate } from "react-router-dom";
 
 export function Header() {
   const { amountCoffeInCart } = useCart();
+  const navigate = useNavigate();
 
   const theme = useTheme();
   const filterValueNull = amountCoffeInCart?.filter(
@@ -35,6 +37,7 @@ export function Header() {
               weight="fill"
               color={theme["yellow-dark"]}
               size={22}
+              onClick={() => navigate("/checkout")}
             />
 
             <Counter>
@@ -47,6 +50,7 @@ export function Header() {
               weight="fill"
               color={theme["yellow-dark"]}
               size={22}
+              onClick={() => navigate("/checkout")}
             />
           </ShoppingCartButton>
         )}
