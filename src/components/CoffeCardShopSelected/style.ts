@@ -69,6 +69,7 @@ export const DeleteButton = styled.button`
   justify-content: center;
   gap: 0.25rem;
   padding: 0.5rem;
+  cursor: pointer;
 
   width: 91px;
   height: 32px;

@@ -17,14 +17,15 @@ import { useContext, useState } from "react";
 import { CartContext } from "../../contexts/CartContext";
 import { CartItem } from "../../contexts/types";
 import { useCart } from "../../contexts/useCart";
+import { ItemsIntro } from "../IntroHome/style";
 
 type Props = {
   informations: CartItem;
-  coffeInformations: CartItem[];
+  // coffeInformations: CartItem[];
 };
 
-export function CoffeCard({ informations, coffeInformations }: Props) {
-  const { addToCart } = useCart();
+export function CoffeCard({ informations }: Props) {
+  const { addToCart, coffeInformations } = useCart();
   const theme = useTheme();
 
   const [quantity, setQuantity] = useState(1);
@@ -37,15 +38,11 @@ export function CoffeCard({ informations, coffeInformations }: Props) {
     setQuantity((state) => state - 1);
   }
 
-  function handleAddToCart() {
-    addToCart(coffeInformations, informations.id!, quantity);
-  }
-
   return (
     <ContainerCoffeCard>
       <CoffeImgLogo src={`/variants/${informations.logoImg}.svg`} />
       <CoffeType>
-        {informations.type.map((item) => {
+        {informations.type!.map((item) => {
           return (
             <div>
               <p>{item}</p>
@@ -66,15 +63,13 @@ export function CoffeCard({ informations, coffeInformations }: Props) {
               color={theme.purple}
               weight="fill"
             />
-            <p>{quantity}</p>
+            <p>{informations.quantity! + quantity}</p>
             <Plus onClick={handleIncrease} color={theme.purple} weight="fill" />
           </CounterCoffeAmount>
 
           <ButtonCoffeCard>
             <ShoppingCart
-              onClick={() =>
-                addToCart(coffeInformations, informations.id!, quantity)
-              }
+              onClick={async () => await addToCart(informations.id!, quantity)}
               size={22}
               color={theme.white}
               weight="fill"

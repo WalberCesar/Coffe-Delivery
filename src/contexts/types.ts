@@ -7,16 +7,15 @@ export type CartItem = {
   description?: string;
   price?: number;
   logoImg?: string;
-  quantity?: number;
+  quantity: number;
 };
 export type CartContextType = {
-  addToCart: (
-    coffeInformations: CartItem[],
-    coffeId: string,
-    coffeQuantity: number
-  ) => Promise<void>;
+  addToCart: (coffeId: string, coffeQuantity: number) => void;
   coffeInformations: CartItem[];
-  amountCoffeInCart: CartItem[] | null;
+  amountCoffeInCart: CartItem[];
+  setQuantityItensOnHeaderCart: React.Dispatch<React.SetStateAction<number>>;
+  quantityItensOnHeaderCart: number;
+  setAmountCoffeInCart: (value: React.SetStateAction<CartItem[]>) => void;
 };
 
 export type CartContextProviderProps = {

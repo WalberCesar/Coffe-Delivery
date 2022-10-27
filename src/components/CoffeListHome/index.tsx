@@ -15,7 +15,7 @@ export function CoffeListHome() {
             <CoffeCard
               key={item.id}
               informations={item}
-              coffeInformations={coffeInformations}
+              // coffeInformations={coffeInformations}
             />
           );
         })}

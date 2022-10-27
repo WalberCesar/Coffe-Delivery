@@ -26,20 +26,15 @@ import {
 
 export function Checkout() {
   const theme = useTheme();
-  const { amountCoffeInCart, addToCart } = useContext(CartContext);
+  const {
+    amountCoffeInCart,
+    addToCart,
+    setQuantityItensOnHeaderCart,
+    setAmountCoffeInCart,
+  } = useContext(CartContext);
 
   const [checkoutAmountCoffeInCart, setCheckoutAmountCoffeInCart] =
     useState<CartItem[]>();
-
-  // async function getItems() {
-  //   const response = await localStorage.getItem("@coffe_delivery");
-  //   const responseJSON = await JSON.parse(response!);
-  //   setCheckoutAmountCoffeInCart(responseJSON);
-  // }
-
-  // useEffect(() => {
-  //   getItems();
-  // }, [getItems]);
 
   useEffect(() => {
     async function getItems() {
@@ -50,6 +45,37 @@ export function Checkout() {
 
     getItems();
   }, [addToCart, amountCoffeInCart]);
+
+  function handleDeleteCoffeInCart(id: string) {
+    const filter = checkoutAmountCoffeInCart?.filter((item) => item.id !== id);
+
+    setCheckoutAmountCoffeInCart(filter);
+  }
+
+  async function removeItensOnStorage() {
+    const dataSet = await JSON.stringify(checkoutAmountCoffeInCart);
+    await localStorage.setItem("@coffe_delivery", dataSet);
+    if (
+      checkoutAmountCoffeInCart?.length === 0 ||
+      checkoutAmountCoffeInCart === undefined
+    ) {
+      await localStorage.removeItem("@coffe_delivery");
+      setAmountCoffeInCart([]);
+    }
+  }
+  useEffect(() => {
+    removeItensOnStorage();
+  }, [checkoutAmountCoffeInCart]);
+
+  useEffect(() => {
+    removeItensOnStorage();
+    setQuantityItensOnHeaderCart(checkoutAmountCoffeInCart?.length!);
+  }, []);
+  useEffect(() => {
+    setQuantityItensOnHeaderCart(checkoutAmountCoffeInCart?.length!);
+  }, [handleDeleteCoffeInCart]);
+
+  const [totalPrice, setTotalPrice] = useState(0);
 
   return (
     <Container>
@@ -100,8 +126,8 @@ export function Checkout() {
           .map((item) => (
             <CoffeCardShopSelected
               item={item}
-              checkoutAmountCoffeInCart={checkoutAmountCoffeInCart}
               setCheckoutAmountCoffeInCart={setCheckoutAmountCoffeInCart}
+              handleDeleteCoffeInCart={handleDeleteCoffeInCart}
             />
           ))}
 

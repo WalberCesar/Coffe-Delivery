@@ -40,6 +40,7 @@ export function CartContextProvider({ children }: CartContextProviderProps) {
       description: "Meio a meio de expresso tradicional com leite vaporizados",
       price: 9.9,
       logoImg: "cafeComLeite",
+      quantity: 0,
     },
     {
       id: uuidv4(),
@@ -58,6 +59,7 @@ export function CartContextProvider({ children }: CartContextProviderProps) {
         "Bebida com canela feita de doses iguais de café, leite e espuma",
       price: 9.9,
       logoImg: "capuccino",
+      quantity: 0,
     },
     {
       id: uuidv4(),
@@ -127,37 +129,107 @@ export function CartContextProvider({ children }: CartContextProviderProps) {
     },
   ]);
 
-  const [coffeSelected, setCoffeSelected] = useState<CartItem>();
+  const [quantityItensOnHeaderCart, setQuantityItensOnHeaderCart] = useState(0);
 
-  const [amountCoffeInCart, setAmountCoffeInCart] = useState<CartItem[] | null>(
+  const [amountCoffeInCart, setAmountCoffeInCart] = useState<CartItem[]>(
     [] as CartItem[]
   );
 
-  async function addToCart(
-    coffeInformations: CartItem[],
-    coffeId: string,
-    coffeQuantity: number
-  ) {
-    coffeInformations
-      .filter((item) => item.id === coffeId)
-      .map((item) => {
-        return setCoffeSelected({
-          id: item.id,
-          description: item.description,
-          flavor: item.flavor,
-          logoImg: item.logoImg,
-          price: item.price! * coffeQuantity,
-          quantity: coffeQuantity,
-          type: item.type,
-        });
-      });
+  function addToCart(coffeId: string, coffeQuantity: number) {
+    const filter = coffeInformations.filter((item) => item.id === coffeId);
+    filter.map((item) => {
+      const coffeSelected: CartItem = {
+        id: item.id,
+        description: item.description,
+        flavor: item.flavor,
+        logoImg: item.logoImg,
+        price: item.price! * coffeQuantity,
+        quantity: coffeQuantity,
+        type: item.type,
+      };
+      if (amountCoffeInCart.length === 0) {
+        return setAmountCoffeInCart([coffeSelected]);
+      } else {
+        return setAmountCoffeInCart((state) => [...state, coffeSelected]);
+      }
 
-    setAmountCoffeInCart((state) => [...state!, coffeSelected!]);
+      // return setCoffeSelected(coffeSelected);
+    });
 
-    const dataSet = await JSON.stringify(amountCoffeInCart);
-    await localStorage.setItem("@coffe_delivery", dataSet);
-    console.log(amountCoffeInCart);
+    //   if (amountCoffeInCart.length <= 0) {
+    //     setAmountCoffeInCart([coffeSelected!]);
+    //   }
+    //   if (amountCoffeInCart.length > 0) {
+    //     setAmountCoffeInCart((state) => [...state, coffeSelected!]);
+    //   }
+    //   setAmountCoffeInCart((state) => state.filter((item) => item !== undefined));
   }
+
+  // console.log(amountCoffeInCart);
+
+  async function setItensOnStorage() {
+    if (amountCoffeInCart.length > 0) {
+      const dataSet = await JSON.stringify(amountCoffeInCart);
+      await localStorage.setItem("@coffe_delivery", dataSet);
+    }
+
+    // filterInformations(coffeId, coffeQuantity);
+    // coffeInformations: CartItem[]
+    // coffeId: string,
+    // coffeQuantity: number
+    // const filter = await coffeInformations.filter(
+    //   (item) => item.id === coffeId
+    // );
+    // filter.map((item) => {
+    //   const coffeSelected: CartItem = {
+    //     id: item.id,
+    //     description: item.description,
+    //     flavor: item.flavor,
+    //     logoImg: item.logoImg,
+    //     price: item.price! * coffeQuantity,
+    //     quantity: coffeQuantity,
+    //     type: item.type,
+    //   };
+    // });
+
+    // const dataMap = filter.map((item) => item);
+    // dataMap.map((item) => {
+    //   return setCoffeSelected({
+    //     id: item.id,
+    //     description: item.description,
+    //     flavor: item.flavor,
+    //     logoImg: item.logoImg,
+    //     price: item.price! * coffeQuantity,
+    //     quantity: coffeQuantity,
+    //     type: item.type,
+    //   });
+    // });
+
+    // if (amountCoffeInCart.length <= 0) {
+    //   setAmountCoffeInCart([coffeSelected!]);
+    // }
+    // if (amountCoffeInCart.length > 0) {
+    //   setAmountCoffeInCart((state) => [...state, coffeSelected!]);
+    // }
+    // setAmountCoffeInCart((state) => state.filter((item) => item !== undefined));
+    // if (amountCoffeInCart.length > 0) {
+    //   const dataSet = await JSON.stringify(amountCoffeInCart);
+    //   await localStorage.setItem("@coffe_delivery", dataSet);
+    // }
+
+    // console.log("filter => ", filter);
+    // console.log("coffeselected => ", coffeSelected);
+
+    // console.log("amountCoffeInCart => ", amountCoffeInCart);
+  }
+  useEffect(() => {
+    setQuantityItensOnHeaderCart(amountCoffeInCart.length);
+    setItensOnStorage();
+  }, []);
+  useEffect(() => {
+    setItensOnStorage();
+    setQuantityItensOnHeaderCart(amountCoffeInCart.length);
+  }, [amountCoffeInCart]);
 
   // useEffect(() => {
   //   async function setItemsCoffe() {
@@ -174,6 +246,9 @@ export function CartContextProvider({ children }: CartContextProviderProps) {
         addToCart,
         coffeInformations,
         amountCoffeInCart: amountCoffeInCart,
+        setQuantityItensOnHeaderCart,
+        quantityItensOnHeaderCart,
+        setAmountCoffeInCart,
       }}
     >
       {children}

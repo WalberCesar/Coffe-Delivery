@@ -11,64 +11,74 @@ import {
 
 import ImgCoffe from "../../assets/coffes/Coffee.svg";
 import { CartItem } from "../../contexts/types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type Props = {
-  item: CartItem | null;
+  item: CartItem;
   setCheckoutAmountCoffeInCart: React.Dispatch<
     React.SetStateAction<CartItem[] | undefined>
   >;
-  checkoutAmountCoffeInCart: CartItem[];
+  handleDeleteCoffeInCart: (id: string) => void;
 };
 
 export function CoffeCardShopSelected({
   item,
-  checkoutAmountCoffeInCart,
   setCheckoutAmountCoffeInCart,
+  handleDeleteCoffeInCart,
 }: Props) {
   const theme = useTheme();
-  const [counterQuantity, setCounterQuantity] = useState(0);
+  const [counterQuantity, setCounterQuantity] = useState<number>(
+    0 + item?.quantity
+  );
 
   function handleIncrease() {
     setCounterQuantity((state) => state + 1);
-    setCheckoutAmountCoffeInCart((state) => [
-      ...state!,
-      { quantity: counterQuantity },
-    ]);
+    // setPrice((item.price! / item.quantity) * counterQuantity);
   }
 
   function handleDecrease() {
     setCounterQuantity((state) => state - 1);
-    setCheckoutAmountCoffeInCart((state) => [
-      ...state!,
-      { quantity: counterQuantity },
-    ]);
   }
+
+  useEffect(() => {
+    setPrice(
+      `R$ ${((item.price! / item.quantity) * counterQuantity).toFixed(2)}`
+    );
+  }, []);
+  useEffect(() => {
+    setPrice(
+      `R$ ${((item.price! / item.quantity) * counterQuantity).toFixed(2)}`
+    );
+  }, [counterQuantity]);
+
+  const [price, setPrice] = useState<number>(0);
 
   return (
     <>
       <Container>
         <Content>
-          <img src={ImgCoffe} />
+          <img src={`/variants/${item.logoImg}.svg`} />
 
           <div>
-            <p>{item?.type}</p>
+            <p>{item?.flavor}</p>
 
             <div>
               <CounterButton>
                 <Minus
-                  onClick={handleDecrease}
+                  onClick={counterQuantity >= 2 && handleDecrease}
                   color={theme["purple-dark"]}
                   size={14}
+                  cursor={"pointer"}
                 />
-                <p>{item?.quantity}</p>
+                <p>{counterQuantity}</p>
                 <Plus
-                  onClick={handleIncrease}
+                  cursor={"pointer"}
+                  onClick={counterQuantity >= 1 && handleIncrease}
                   color={theme["purple-dark"]}
                   size={14}
                 />
               </CounterButton>
-              <DeleteButton>
+              <DeleteButton onClick={() => handleDeleteCoffeInCart(item?.id!)}>
                 <Trash color={theme["purple-dark"]} size={14} />
                 <p>remover</p>
               </DeleteButton>
@@ -76,7 +86,7 @@ export function CoffeCardShopSelected({
           </div>
         </Content>
 
-        <p>{item?.price}</p>
+        <p>{price}</p>
       </Container>
 
       <Divider />
