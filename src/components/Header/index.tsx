@@ -37,7 +37,11 @@ export function Header() {
 
   return (
     <ContainerHeader>
-      <img src={logoImg} onClick={() => navigate("/")} />
+      <img
+        style={{ cursor: "pointer" }}
+        src={logoImg}
+        onClick={() => navigate("/")}
+      />
       <RightHeaderMenu>
         <div>
           <MapPin weight="fill" color={theme["purple-dark"]} size={22} />
@@ -47,6 +51,7 @@ export function Header() {
         {counter! > 0 ? (
           <ShoppingCartButton>
             <ShoppingCart
+              cursor={"pointer"}
               weight="fill"
               color={theme["yellow-dark"]}
               size={22}
@@ -60,10 +65,11 @@ export function Header() {
         ) : (
           <ShoppingCartButton>
             <ShoppingCart
+              cursor={"not-allowed"}
               weight="fill"
               color={theme["yellow-dark"]}
               size={22}
-              onClick={() => navigate("/checkout")}
+              // onClick={() => navigate("/checkout")}
             />
           </ShoppingCartButton>
         )}

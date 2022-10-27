@@ -44,7 +44,7 @@ export function CoffeCard({ informations }: Props) {
       <CoffeType>
         {informations.type!.map((item) => {
           return (
-            <div>
+            <div key={item}>
               <p>{item}</p>
             </div>
           );
@@ -59,17 +59,24 @@ export function CoffeCard({ informations }: Props) {
         <CoffeMenuAmount>
           <CounterCoffeAmount>
             <Minus
-              onClick={handleDecrease}
+              cursor={quantity >= 2 ? "pointer" : "not-allowed"}
+              onClick={quantity >= 2 && handleDecrease}
               color={theme.purple}
               weight="fill"
             />
-            <p>{informations.quantity! + quantity}</p>
-            <Plus onClick={handleIncrease} color={theme.purple} weight="fill" />
+            <p>{quantity}</p>
+            <Plus
+              cursor={"pointer"}
+              onClick={quantity >= 1 && handleIncrease}
+              color={theme.purple}
+              weight="fill"
+            />
           </CounterCoffeAmount>
 
           <ButtonCoffeCard>
             <ShoppingCart
-              onClick={async () => await addToCart(informations.id!, quantity)}
+              cursor={"pointer"}
+              onClick={() => addToCart(informations.id!, quantity)}
               size={22}
               color={theme.white}
               weight="fill"

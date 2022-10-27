@@ -28,7 +28,7 @@ export function CoffeCardShopSelected({
 }: Props) {
   const theme = useTheme();
   const [counterQuantity, setCounterQuantity] = useState<number>(
-    0 + item?.quantity
+    item?.quantity
   );
 
   function handleIncrease() {
@@ -41,14 +41,10 @@ export function CoffeCardShopSelected({
   }
 
   useEffect(() => {
-    setPrice(
-      `R$ ${((item.price! / item.quantity) * counterQuantity).toFixed(2)}`
-    );
+    setPrice(`R$ ${(item.price! * counterQuantity).toFixed(2)}`);
   }, []);
   useEffect(() => {
-    setPrice(
-      `R$ ${((item.price! / item.quantity) * counterQuantity).toFixed(2)}`
-    );
+    setPrice(`R$ ${(item.price! * counterQuantity).toFixed(2)}`);
   }, [counterQuantity]);
 
   const [price, setPrice] = useState<number>(0);
