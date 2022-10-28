@@ -9,45 +9,44 @@ import {
   Divider,
 } from "./style";
 
-import ImgCoffe from "../../assets/coffes/Coffee.svg";
 import { CartItem } from "../../contexts/types";
 import { useEffect, useState } from "react";
 
 type Props = {
   item: CartItem;
-  setCheckoutAmountCoffeInCart: React.Dispatch<
-    React.SetStateAction<CartItem[] | undefined>
-  >;
   handleDeleteCoffeInCart: (id: string) => void;
+  incrementPrice: (coffeid: string) => void;
+  decrementPrice: (coffeid: string) => void;
 };
 
 export function CoffeCardShopSelected({
   item,
-  setCheckoutAmountCoffeInCart,
   handleDeleteCoffeInCart,
+  incrementPrice,
+  decrementPrice,
 }: Props) {
   const theme = useTheme();
-  const [counterQuantity, setCounterQuantity] = useState<number>(
-    item?.quantity
-  );
+  // const [counterQuantity, setCounterQuantity] = useState<number>(
+  //   item?.quantity
+  // );
+  const [price, setPrice] = useState<number>(0);
 
   function handleIncrease() {
-    setCounterQuantity((state) => state + 1);
-    // setPrice((item.price! / item.quantity) * counterQuantity);
+    // setCounterQuantity((state) => state + 1);
+    incrementPrice(item.id!);
   }
 
   function handleDecrease() {
-    setCounterQuantity((state) => state - 1);
+    // setCounterQuantity((state) => state - 1);
+    decrementPrice(item.id!);
   }
 
   useEffect(() => {
-    setPrice(`R$ ${(item.price! * counterQuantity).toFixed(2)}`);
+    setPrice(`R$ ${(item.price! * item.quantity).toFixed(2)}`);
   }, []);
   useEffect(() => {
-    setPrice(`R$ ${(item.price! * counterQuantity).toFixed(2)}`);
-  }, [counterQuantity]);
-
-  const [price, setPrice] = useState<number>(0);
+    setPrice(`R$ ${(item.price! * item.quantity).toFixed(2)}`);
+  }, [item.quantity]);
 
   return (
     <>
@@ -61,15 +60,15 @@ export function CoffeCardShopSelected({
             <div>
               <CounterButton>
                 <Minus
-                  onClick={counterQuantity >= 2 && handleDecrease}
+                  onClick={item.quantity >= 2 && handleDecrease}
                   color={theme["purple-dark"]}
                   size={14}
                   cursor={"pointer"}
                 />
-                <p>{counterQuantity}</p>
+                <p>{item.quantity}</p>
                 <Plus
                   cursor={"pointer"}
-                  onClick={counterQuantity >= 1 && handleIncrease}
+                  onClick={item.quantity >= 1 && handleIncrease}
                   color={theme["purple-dark"]}
                   size={14}
                 />

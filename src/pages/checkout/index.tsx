@@ -9,6 +9,7 @@ import { useContext, useEffect, useState } from "react";
 import { useTheme } from "styled-components";
 import { CoffeCardShopSelected } from "../../components/CoffeCardShopSelected";
 import { FormAddress } from "../../components/FormAddress";
+import { ItemsIntro } from "../../components/IntroHome/style";
 import { TotalPrice } from "../../components/TotalPrice";
 import { CartContext } from "../../contexts/CartContext";
 import { CartItem } from "../../contexts/types";
@@ -36,20 +37,10 @@ export function Checkout() {
   const [checkoutAmountCoffeInCart, setCheckoutAmountCoffeInCart] =
     useState<CartItem[]>();
 
-  useEffect(() => {
-    async function getItems() {
-      const response = await localStorage.getItem("@coffe_delivery");
-      const responseJSON = await JSON.parse(response!);
-      setCheckoutAmountCoffeInCart(responseJSON);
-    }
-
-    getItems();
-  }, [addToCart, amountCoffeInCart]);
-
   function handleDeleteCoffeInCart(id: string) {
-    const filter = checkoutAmountCoffeInCart?.filter((item) => item.id !== id);
-
-    setCheckoutAmountCoffeInCart(filter);
+    setCheckoutAmountCoffeInCart(
+      checkoutAmountCoffeInCart?.filter((item) => item.id !== id)
+    );
   }
 
   async function removeItensOnStorage() {
@@ -63,8 +54,65 @@ export function Checkout() {
       setAmountCoffeInCart([]);
     }
   }
+
+  const [totalPrice, setTotalPrice] = useState<number[]>([]);
+  function calculateTotalPPrice() {
+    if (checkoutAmountCoffeInCart!?.length > 0) {
+      const data = checkoutAmountCoffeInCart
+        ?.filter((item) => item !== null)
+        .map((item) => item.price! * item.quantity);
+
+      console.log("data => ", data);
+      setTotalPrice(data);
+    } else {
+      setTotalPrice([]);
+    }
+  }
+
+  console.log("checkout => ", checkoutAmountCoffeInCart);
+
+  function incrementPrice(coffeid: string) {
+    // const filter = checkoutAmountCoffeInCart?.filter((item) => item.id === id);
+    const incrementQuantity: any = checkoutAmountCoffeInCart?.map((item) => {
+      if (item.id === coffeid) {
+        return {
+          id: item.id,
+          description: item.description,
+          flavor: item.flavor,
+          logoImg: item.logoImg,
+          price: item.price,
+          type: item.type,
+          quantity: item.quantity + 1,
+        };
+      } else {
+        return item;
+      }
+    });
+    setCheckoutAmountCoffeInCart(incrementQuantity!);
+  }
+
+  function decrementPrice(coffeid: string) {
+    // const filter = checkoutAmountCoffeInCart?.filter((item) => item.id === id);
+    const incrementQuantity: any = checkoutAmountCoffeInCart?.map((item) => {
+      if (item.id === coffeid) {
+        return {
+          id: item.id,
+          description: item.description,
+          flavor: item.flavor,
+          logoImg: item.logoImg,
+          price: item.price,
+          type: item.type,
+          quantity: item.quantity - 1,
+        };
+      } else {
+        return item;
+      }
+    });
+    setCheckoutAmountCoffeInCart(incrementQuantity!);
+  }
   useEffect(() => {
     removeItensOnStorage();
+    calculateTotalPPrice();
   }, [checkoutAmountCoffeInCart]);
 
   useEffect(() => {
@@ -74,8 +122,15 @@ export function Checkout() {
   useEffect(() => {
     setQuantityItensOnHeaderCart(checkoutAmountCoffeInCart?.length!);
   }, [handleDeleteCoffeInCart]);
+  useEffect(() => {
+    async function getItems() {
+      const response = await localStorage.getItem("@coffe_delivery");
+      const responseJSON = await JSON.parse(response!);
+      setCheckoutAmountCoffeInCart(responseJSON);
+    }
 
-  const [totalPrice, setTotalPrice] = useState(0);
+    getItems();
+  }, [addToCart, amountCoffeInCart]);
 
   return (
     <Container>
@@ -126,12 +181,13 @@ export function Checkout() {
           .map((item) => (
             <CoffeCardShopSelected
               item={item}
-              setCheckoutAmountCoffeInCart={setCheckoutAmountCoffeInCart}
               handleDeleteCoffeInCart={handleDeleteCoffeInCart}
+              incrementPrice={incrementPrice}
+              decrementPrice={decrementPrice}
             />
           ))}
 
-        <TotalPrice />
+        <TotalPrice price={totalPrice} />
         <ButtonConfirmShopping>
           <label>CONFIRMAR PEDIDO</label>
         </ButtonConfirmShopping>
