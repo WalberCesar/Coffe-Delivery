@@ -171,15 +171,8 @@ export function CartContextProvider({ children }: CartContextProviderProps) {
             type: state[coffeAlreadyExistsInCart].type,
           }),
         ]);
-        // console.log(amountCoffeInCart[coffeAlreadyExistsInCart].quantity);
-        // console.log(amountCoffeInCart[coffeAlreadyExistsInCart]);
-        // console.log(amountCoffeInCart);
-
-        // console.log(quantity);
       }
     });
-
-    // console.log(coffeAlreadyExistsInCart);
   }
 
   async function setItensOnStorage() {
