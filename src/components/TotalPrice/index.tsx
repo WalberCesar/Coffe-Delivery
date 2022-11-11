@@ -1,19 +1,35 @@
+import { useEffect, useState } from "react";
+import { CartItem } from "../../contexts/types";
 import { Container, Total, ValueFrete, ValueTotalItens } from "./style";
 type Props = {
-  price: number[];
+  checkoutAmountCoffeInCart: CartItem[] | undefined;
 };
-export function TotalPrice({ price }: Props) {
-  const total = price
+export function TotalPrice({ checkoutAmountCoffeInCart }: Props) {
+  const [totalPrice, setTotalPrice] = useState<number[]>([]);
+  const total = totalPrice
     .filter((item) => item !== null)
-    .reduce((acumulator, price) => {
-      if (price > 0) {
-        return acumulator + price;
+    .reduce((acumulator, totalPrice) => {
+      if (totalPrice > 0) {
+        return acumulator + totalPrice;
       } else {
         return (acumulator = 0);
       }
     }, 0);
-  //   console.log("total => ", total);
-  //   console.log("price => ", price.length);
+
+  function calculateTotalPPrice() {
+    if (checkoutAmountCoffeInCart!?.length > 0) {
+      const data = checkoutAmountCoffeInCart
+        ?.filter((item) => item !== null)
+        .map((item) => item.price! * item.quantity);
+
+      setTotalPrice(data);
+    } else {
+      setTotalPrice([]);
+    }
+  }
+  useEffect(() => {
+    calculateTotalPPrice();
+  }, [checkoutAmountCoffeInCart]);
   return (
     <Container>
       <ValueTotalItens>

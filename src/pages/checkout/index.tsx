@@ -1,38 +1,85 @@
-import {
-  CurrencyDollar,
-  MapPin,
-  CreditCard,
-  Bank,
-  Money,
-} from "phosphor-react";
-import { useContext, useEffect, useState } from "react";
-import { useTheme } from "styled-components";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import { CoffeCardShopSelected } from "../../components/CoffeCardShopSelected";
-import { FormAddress } from "../../components/FormAddress";
-import { ItemsIntro } from "../../components/IntroHome/style";
 import { TotalPrice } from "../../components/TotalPrice";
-import { CartContext } from "../../contexts/CartContext";
-import { CartItem } from "../../contexts/types";
+import { CartItem, InformationsAdreesAndPayament } from "../../contexts/types";
+import { useCart } from "../../contexts/useCart";
 import {
   ContainerInformations,
-  AdressInformation,
-  HeaderInformation,
-  PayamentInformation,
-  HeaderPayament,
-  ContainerPayamentMethod,
   ButtonConfirmShopping,
   CoffeShoppingList,
   Container,
 } from "./style";
 
+import { FormAddress } from "../../components/FormAddress";
+import { PayamentInformations } from "../../components/PayamentInformations";
+type ErrorsType = {
+  errors: {
+    [key: string]: {
+      message: string;
+    };
+  };
+};
 export function Checkout() {
-  const theme = useTheme();
   const {
-    amountCoffeInCart,
-    addToCart,
     setQuantityItensOnHeaderCart,
+    setDataAdrees,
+    addToCart,
+    amountCoffeInCart,
     setAmountCoffeInCart,
-  } = useContext(CartContext);
+    dataAdrees,
+  } = useCart();
+
+  const { handleSubmit, register, formState } =
+    useForm<InformationsAdreesAndPayament>();
+
+  const { errors } = formState as unknown as ErrorsType;
+
+  const navigate = useNavigate();
+
+  function handleSubmitAdrees({
+    bairro,
+    cep,
+    cidade,
+    complemento,
+    numero,
+    rua,
+    uf,
+  }: InformationsAdreesAndPayament) {
+    const data = {
+      bairro: bairro,
+      cep: cep,
+      cidade: cidade,
+      complemento: complemento,
+      numero: numero,
+      rua: rua,
+      uf: uf,
+    };
+    setDataAdrees((state) => ({
+      ...state,
+      bairro: data.bairro,
+      cep: data.cep,
+      cidade: data.cidade,
+      complemento: data.complemento,
+      numero: data.numero,
+      rua: data.rua,
+      uf: data.uf,
+      pagamento: state.pagamento,
+    }));
+
+    setQuantityItensOnHeaderCart(0);
+    if (checkoutAmountCoffeInCart?.length! > 0) {
+      if (dataAdrees.pagamento === "") {
+        alert("Selecione um método de pagamento");
+      } else {
+        navigate("/succes");
+      }
+    } else {
+      alert("Sua lista de compras esta vazia! Adicione itens ao pedido");
+      navigate("/");
+    }
+  }
 
   const [checkoutAmountCoffeInCart, setCheckoutAmountCoffeInCart] =
     useState<CartItem[]>();
@@ -55,69 +102,14 @@ export function Checkout() {
     }
   }
 
-  const [totalPrice, setTotalPrice] = useState<number[]>([]);
-  function calculateTotalPPrice() {
-    if (checkoutAmountCoffeInCart!?.length > 0) {
-      const data = checkoutAmountCoffeInCart
-        ?.filter((item) => item !== null)
-        .map((item) => item.price! * item.quantity);
-
-      console.log("data => ", data);
-      setTotalPrice(data);
-    } else {
-      setTotalPrice([]);
-    }
-  }
-
-  console.log("checkout => ", checkoutAmountCoffeInCart);
-
-  function incrementPrice(coffeid: string) {
-    // const filter = checkoutAmountCoffeInCart?.filter((item) => item.id === id);
-    const incrementQuantity: any = checkoutAmountCoffeInCart?.map((item) => {
-      if (item.id === coffeid) {
-        return {
-          id: item.id,
-          description: item.description,
-          flavor: item.flavor,
-          logoImg: item.logoImg,
-          price: item.price,
-          type: item.type,
-          quantity: item.quantity + 1,
-        };
-      } else {
-        return item;
-      }
-    });
-    setCheckoutAmountCoffeInCart(incrementQuantity!);
-  }
-
-  function decrementPrice(coffeid: string) {
-    // const filter = checkoutAmountCoffeInCart?.filter((item) => item.id === id);
-    const incrementQuantity: any = checkoutAmountCoffeInCart?.map((item) => {
-      if (item.id === coffeid) {
-        return {
-          id: item.id,
-          description: item.description,
-          flavor: item.flavor,
-          logoImg: item.logoImg,
-          price: item.price,
-          type: item.type,
-          quantity: item.quantity - 1,
-        };
-      } else {
-        return item;
-      }
-    });
-    setCheckoutAmountCoffeInCart(incrementQuantity!);
-  }
   useEffect(() => {
     removeItensOnStorage();
-    calculateTotalPPrice();
   }, [checkoutAmountCoffeInCart]);
 
   useEffect(() => {
     removeItensOnStorage();
     setQuantityItensOnHeaderCart(checkoutAmountCoffeInCart?.length!);
+    setDataAdrees({});
   }, []);
   useEffect(() => {
     setQuantityItensOnHeaderCart(checkoutAmountCoffeInCart?.length!);
@@ -135,44 +127,9 @@ export function Checkout() {
   return (
     <Container>
       <ContainerInformations>
-        <AdressInformation>
-          <HeaderInformation>
-            <MapPin color={theme["yellow-dark"]} size={22} />
-            <div>
-              <h3>Endereço de entrega</h3>
-              <p>Informe o endereço onde deseja receber seu pedido</p>
-            </div>
-          </HeaderInformation>
+        <FormAddress error={errors} register={register} />
 
-          <FormAddress />
-        </AdressInformation>
-
-        <PayamentInformation>
-          <HeaderPayament>
-            <CurrencyDollar color={theme.purple} size={22} />
-            <div>
-              <h3>Pagamento</h3>
-              <p>
-                O pagamento é feito na entrega. Escolha a forma que deseja pagar
-              </p>
-            </div>
-          </HeaderPayament>
-
-          <ContainerPayamentMethod>
-            <button>
-              <CreditCard color={theme.purple} size={16} />
-              Cartão de crédito
-            </button>
-            <button>
-              <Bank color={theme.purple} size={16} />
-              Cartão de débito
-            </button>
-            <button>
-              <Money color={theme.purple} size={16} />
-              Dinheiro
-            </button>
-          </ContainerPayamentMethod>
-        </PayamentInformation>
+        <PayamentInformations />
       </ContainerInformations>
 
       <CoffeShoppingList>
@@ -182,13 +139,13 @@ export function Checkout() {
             <CoffeCardShopSelected
               item={item}
               handleDeleteCoffeInCart={handleDeleteCoffeInCart}
-              incrementPrice={incrementPrice}
-              decrementPrice={decrementPrice}
+              setCheckoutAmountCoffeInCart={setCheckoutAmountCoffeInCart}
+              checkoutAmountCoffeInCart={checkoutAmountCoffeInCart}
             />
           ))}
 
-        <TotalPrice price={totalPrice} />
-        <ButtonConfirmShopping>
+        <TotalPrice checkoutAmountCoffeInCart={checkoutAmountCoffeInCart} />
+        <ButtonConfirmShopping onClick={handleSubmit(handleSubmitAdrees)}>
           <label>CONFIRMAR PEDIDO</label>
         </ButtonConfirmShopping>
       </CoffeShoppingList>

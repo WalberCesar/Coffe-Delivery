@@ -1,5 +1,10 @@
 import { createContext, ReactNode, useEffect, useState } from "react";
-import { CartContextProviderProps, CartContextType, CartItem } from "./types";
+import {
+  CartContextProviderProps,
+  CartContextType,
+  CartItem,
+  InformationsAdreesAndPayament,
+} from "./types";
 import { v4 as uuidv4 } from "uuid";
 
 export const CartContext = createContext({} as CartContextType);
@@ -134,6 +139,18 @@ export function CartContextProvider({ children }: CartContextProviderProps) {
   const [amountCoffeInCart, setAmountCoffeInCart] = useState<CartItem[]>(
     [] as CartItem[]
   );
+  const [dataAdrees, setDataAdrees] = useState<
+    InformationsAdreesAndPayament | {}
+  >({
+    pagamento: "",
+    bairro: "",
+    cep: "",
+    cidade: "",
+    complemento: "",
+    numero: "",
+    rua: "",
+    uf: "",
+  } as InformationsAdreesAndPayament);
 
   const [quantity, setQuantity] = useState(0);
 
@@ -200,6 +217,8 @@ export function CartContextProvider({ children }: CartContextProviderProps) {
         setQuantityItensOnHeaderCart,
         quantityItensOnHeaderCart,
         setAmountCoffeInCart,
+        setDataAdrees,
+        dataAdrees,
       }}
     >
       {children}

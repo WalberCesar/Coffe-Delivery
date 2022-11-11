@@ -13,27 +13,10 @@ import { useCart } from "../../contexts/useCart";
 import { useNavigate } from "react-router-dom";
 
 export function Header() {
-  const { amountCoffeInCart, quantityItensOnHeaderCart } = useCart();
+  const { quantityItensOnHeaderCart } = useCart();
   const navigate = useNavigate();
   const theme = useTheme();
   const counter = quantityItensOnHeaderCart;
-
-  // const [counter, setCounter] = useState(0);
-
-  // async function getItensOnStorage() {
-  //   const data = await localStorage.getItem("@coffe_delivery");
-  //   const responseJSON = await JSON.parse(data!);
-  //   setCounter(responseJSON.length);
-  // }
-
-  // console.log("counter =>", counter);
-  // useEffect(() => {
-  //   getItensOnStorage();
-  // }, []);
-
-  // useEffect(() => {
-  //   getItensOnStorage();
-  // }, [amountCoffeInCartLength]);
 
   return (
     <ContainerHeader>

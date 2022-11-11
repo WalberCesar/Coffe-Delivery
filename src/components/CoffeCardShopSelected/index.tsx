@@ -15,30 +15,58 @@ import { useEffect, useState } from "react";
 type Props = {
   item: CartItem;
   handleDeleteCoffeInCart: (id: string) => void;
-  incrementPrice: (coffeid: string) => void;
-  decrementPrice: (coffeid: string) => void;
+  setCheckoutAmountCoffeInCart: React.Dispatch<
+    React.SetStateAction<CartItem[] | undefined>
+  >;
+  checkoutAmountCoffeInCart: CartItem[] | undefined;
 };
 
 export function CoffeCardShopSelected({
   item,
   handleDeleteCoffeInCart,
-  incrementPrice,
-  decrementPrice,
+  checkoutAmountCoffeInCart,
+  setCheckoutAmountCoffeInCart,
 }: Props) {
   const theme = useTheme();
-  // const [counterQuantity, setCounterQuantity] = useState<number>(
-  //   item?.quantity
-  // );
+
   const [price, setPrice] = useState<number>(0);
 
-  function handleIncrease() {
-    // setCounterQuantity((state) => state + 1);
-    incrementPrice(item.id!);
+  function handleIncrease(coffeid: string | undefined) {
+    const incrementQuantity: any = checkoutAmountCoffeInCart?.map((item) => {
+      if (item.id === coffeid) {
+        return {
+          id: item.id,
+          description: item.description,
+          flavor: item.flavor,
+          logoImg: item.logoImg,
+          price: item.price,
+          type: item.type,
+          quantity: item.quantity + 1,
+        };
+      } else {
+        return item;
+      }
+    });
+    setCheckoutAmountCoffeInCart(incrementQuantity!);
   }
 
-  function handleDecrease() {
-    // setCounterQuantity((state) => state - 1);
-    decrementPrice(item.id!);
+  function handleDecrease(coffeid: string | undefined) {
+    const incrementQuantity: any = checkoutAmountCoffeInCart?.map((item) => {
+      if (item.id === coffeid) {
+        return {
+          id: item.id,
+          description: item.description,
+          flavor: item.flavor,
+          logoImg: item.logoImg,
+          price: item.price,
+          type: item.type,
+          quantity: item.quantity - 1,
+        };
+      } else {
+        return item;
+      }
+    });
+    setCheckoutAmountCoffeInCart(incrementQuantity!);
   }
 
   useEffect(() => {
@@ -60,7 +88,7 @@ export function CoffeCardShopSelected({
             <div>
               <CounterButton>
                 <Minus
-                  onClick={item.quantity >= 2 && handleDecrease}
+                  onClick={() => item.quantity >= 2 && handleDecrease(item.id)}
                   color={theme["purple-dark"]}
                   size={14}
                   cursor={"pointer"}
@@ -68,7 +96,7 @@ export function CoffeCardShopSelected({
                 <p>{item.quantity}</p>
                 <Plus
                   cursor={"pointer"}
-                  onClick={item.quantity >= 1 && handleIncrease}
+                  onClick={() => item.quantity >= 1 && handleIncrease(item.id)}
                   color={theme["purple-dark"]}
                   size={14}
                 />
