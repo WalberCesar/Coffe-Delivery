@@ -24,4 +24,8 @@ export const InputAdrees = styled.input`
   height: 2.6rem;
 
   border-radius: 4px;
+
+  :focus {
+    border: 1px solid ${(props) => props.theme["yellow-dark"]};
+  }
 `;
