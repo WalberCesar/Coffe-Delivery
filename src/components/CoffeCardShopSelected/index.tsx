@@ -101,7 +101,11 @@ export function CoffeCardShopSelected({
                   size={14}
                 />
               </CounterButton>
-              <DeleteButton onClick={() => handleDeleteCoffeInCart(item?.id!)}>
+              <DeleteButton
+                onClick={() => {
+                  handleDeleteCoffeInCart(item?.id!);
+                }}
+              >
                 <Trash color={theme["purple-dark"]} size={14} />
                 <p>remover</p>
               </DeleteButton>

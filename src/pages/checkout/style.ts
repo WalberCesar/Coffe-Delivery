@@ -64,3 +64,30 @@ export const ButtonConfirmShopping = styled.button`
     font-stretch: 100;
   }
 `;
+
+export const ContentCartEmpty = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+`;
+export const Text = styled.div`
+  text-decoration: underline;
+  font-weight: 500;
+  color: ${(props) => props.theme["purple-dark"]};
+  cursor: pointer;
+  transition: color 0.2s;
+  :hover {
+    color: ${(props) => props.theme["purple"]};
+  }
+`;
+export const ContainerCartEmpty = styled.div`
+  align-self: center;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+`;

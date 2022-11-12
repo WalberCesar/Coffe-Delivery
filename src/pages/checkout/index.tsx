@@ -5,15 +5,20 @@ import { CoffeCardShopSelected } from "../../components/CoffeCardShopSelected";
 import { TotalPrice } from "../../components/TotalPrice";
 import { CartItem, InformationsAdreesAndPayament } from "../../contexts/types";
 import { useCart } from "../../contexts/useCart";
+import { ShoppingCartSimple } from "phosphor-react";
 import {
   ContainerInformations,
   ButtonConfirmShopping,
   CoffeShoppingList,
   Container,
+  ContentCartEmpty,
+  ContainerCartEmpty,
+  Text,
 } from "./style";
 
 import { FormAddress } from "../../components/FormAddress";
 import { PayamentInformations } from "../../components/PayamentInformations";
+import { useTheme } from "styled-components";
 type ErrorsType = {
   errors: {
     [key: string]: {
@@ -22,6 +27,7 @@ type ErrorsType = {
   };
 };
 export function Checkout() {
+  const theme = useTheme();
   const {
     setQuantityItensOnHeaderCart,
     setDataAdrees,
@@ -101,9 +107,16 @@ export function Checkout() {
       setAmountCoffeInCart([]);
     }
   }
-
+  function cartIsEmpty() {
+    if (checkoutAmountCoffeInCart?.length! <= 0) {
+      alert("Seu carrinho de compra esta vazio!");
+    }
+  }
   useEffect(() => {
     removeItensOnStorage();
+    cartIsEmpty();
+
+    return;
   }, [checkoutAmountCoffeInCart]);
 
   useEffect(() => {
@@ -124,6 +137,8 @@ export function Checkout() {
     getItems();
   }, [addToCart, amountCoffeInCart]);
 
+  console.log(checkoutAmountCoffeInCart?.length);
+
   return (
     <Container>
       <ContainerInformations>
@@ -133,21 +148,38 @@ export function Checkout() {
       </ContainerInformations>
 
       <CoffeShoppingList>
-        {checkoutAmountCoffeInCart
-          ?.filter((item) => item !== null)
-          .map((item) => (
-            <CoffeCardShopSelected
-              item={item}
-              handleDeleteCoffeInCart={handleDeleteCoffeInCart}
-              setCheckoutAmountCoffeInCart={setCheckoutAmountCoffeInCart}
-              checkoutAmountCoffeInCart={checkoutAmountCoffeInCart}
-            />
-          ))}
+        {!checkoutAmountCoffeInCart ? (
+          <ContainerCartEmpty>
+            <ContentCartEmpty>
+              <p style={{ color: `${theme["base-title"]}` }}>
+                Seu carrinho de compra esta vazio!
+              </p>
 
-        <TotalPrice checkoutAmountCoffeInCart={checkoutAmountCoffeInCart} />
-        <ButtonConfirmShopping onClick={handleSubmit(handleSubmitAdrees)}>
-          <label>CONFIRMAR PEDIDO</label>
-        </ButtonConfirmShopping>
+              <ShoppingCartSimple size={30} color={theme["yellow-dark"]} />
+            </ContentCartEmpty>
+            <Text onClick={() => navigate("/")}>
+              Clique aqui para Adicionar itens
+            </Text>
+          </ContainerCartEmpty>
+        ) : (
+          <>
+            {checkoutAmountCoffeInCart
+              ?.filter((item) => item !== null)
+              .map((item) => (
+                <CoffeCardShopSelected
+                  item={item}
+                  handleDeleteCoffeInCart={handleDeleteCoffeInCart}
+                  setCheckoutAmountCoffeInCart={setCheckoutAmountCoffeInCart}
+                  checkoutAmountCoffeInCart={checkoutAmountCoffeInCart}
+                />
+              ))}
+
+            <TotalPrice checkoutAmountCoffeInCart={checkoutAmountCoffeInCart} />
+            <ButtonConfirmShopping onClick={handleSubmit(handleSubmitAdrees)}>
+              <label>CONFIRMAR PEDIDO</label>
+            </ButtonConfirmShopping>
+          </>
+        )}
       </CoffeShoppingList>
     </Container>
   );
