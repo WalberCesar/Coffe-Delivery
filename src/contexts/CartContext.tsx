@@ -6,6 +6,7 @@ import {
   InformationsAdreesAndPayament,
 } from "./types";
 import { v4 as uuidv4 } from "uuid";
+import produce from "immer";
 
 export const CartContext = createContext({} as CartContextType);
 
@@ -167,26 +168,36 @@ export function CartContextProvider({ children }: CartContextProviderProps) {
         quantity: coffeQuantity,
         type: item.type,
       };
-      if (coffeAlreadyExistsInCart < 0) {
-        if (amountCoffeInCart.length === 0) {
-          return setAmountCoffeInCart([coffeSelected]);
+
+      const newCart = produce(amountCoffeInCart, (draft) => {
+        if (coffeAlreadyExistsInCart < 0) {
+          draft.push(coffeSelected);
         } else {
-          return setAmountCoffeInCart((state) => [...state, coffeSelected]);
+          draft[coffeAlreadyExistsInCart].quantity =
+            draft[coffeAlreadyExistsInCart].quantity + 1;
         }
-      } else {
-        setAmountCoffeInCart((state) => [
-          ...state.filter((item) => item !== state[coffeAlreadyExistsInCart]),
-          (state[coffeAlreadyExistsInCart] = {
-            quantity: state[coffeAlreadyExistsInCart].quantity + 1,
-            description: state[coffeAlreadyExistsInCart].description,
-            flavor: state[coffeAlreadyExistsInCart].flavor,
-            id: state[coffeAlreadyExistsInCart].id,
-            logoImg: state[coffeAlreadyExistsInCart].logoImg,
-            price: state[coffeAlreadyExistsInCart].price!,
-            type: state[coffeAlreadyExistsInCart].type,
-          }),
-        ]);
-      }
+      });
+      setAmountCoffeInCart(newCart);
+      // if (coffeAlreadyExistsInCart < 0) {
+      //   if (amountCoffeInCart.length === 0) {
+      //     return setAmountCoffeInCart([coffeSelected]);
+      //   } else {
+      //     return setAmountCoffeInCart((state) => [...state, coffeSelected]);
+      //   }
+      // } else {
+      //   setAmountCoffeInCart((state) => [
+      //     ...state.filter((item) => item !== state[coffeAlreadyExistsInCart]),
+      //     (state[coffeAlreadyExistsInCart] = {
+      //       quantity: state[coffeAlreadyExistsInCart].quantity + 1,
+      //       description: state[coffeAlreadyExistsInCart].description,
+      //       flavor: state[coffeAlreadyExistsInCart].flavor,
+      //       id: state[coffeAlreadyExistsInCart].id,
+      //       logoImg: state[coffeAlreadyExistsInCart].logoImg,
+      //       price: state[coffeAlreadyExistsInCart].price!,
+      //       type: state[coffeAlreadyExistsInCart].type,
+      //     }),
+      //   ]);
+      // }
     });
   }
 
