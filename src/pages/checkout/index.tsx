@@ -137,8 +137,6 @@ export function Checkout() {
     getItems();
   }, [addToCart, amountCoffeInCart]);
 
-  console.log(checkoutAmountCoffeInCart?.length);
-
   return (
     <Container>
       <ContainerInformations>

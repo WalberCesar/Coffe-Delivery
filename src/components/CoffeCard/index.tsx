@@ -25,7 +25,7 @@ type Props = {
 };
 
 export function CoffeCard({ informations }: Props) {
-  const { addToCart, coffeInformations } = useCart();
+  const { addToCart } = useCart();
   const theme = useTheme();
 
   const [quantity, setQuantity] = useState(1);

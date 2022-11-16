@@ -152,8 +152,6 @@ export function CartContextProvider({ children }: CartContextProviderProps) {
     uf: "",
   } as InformationsAdreesAndPayament);
 
-  const [quantity, setQuantity] = useState(0);
-
   function addToCart(coffeId: string, coffeQuantity: number) {
     const coffeAlreadyExistsInCart = amountCoffeInCart.findIndex(
       (item) => item.id === coffeId
