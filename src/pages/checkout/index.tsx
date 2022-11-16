@@ -107,14 +107,9 @@ export function Checkout() {
       setAmountCoffeInCart([]);
     }
   }
-  function cartIsEmpty() {
-    if (checkoutAmountCoffeInCart?.length! <= 0) {
-      alert("Seu carrinho de compra esta vazio!");
-    }
-  }
+
   useEffect(() => {
     removeItensOnStorage();
-    cartIsEmpty();
 
     return;
   }, [checkoutAmountCoffeInCart]);
