@@ -8,6 +8,7 @@ import {
   Header,
   SelectedButtonPayamentMethod,
 } from "./style";
+import { produce } from "immer";
 
 export function PayamentInformations() {
   const theme = useTheme();
@@ -16,17 +17,21 @@ export function PayamentInformations() {
   function selectMethodPayament(
     pagamento: "Cartão de Crédito" | "Cartão de Débito" | "Dinheiro" | ""
   ) {
-    setDataAdrees((state) => ({
-      ...state,
-      bairro: state.bairro,
-      cep: state.cep,
-      cidade: state.cidade,
-      complemento: state.complemento,
-      numero: state.numero,
-      rua: state.rua,
-      uf: state.uf,
-      pagamento: pagamento,
-    }));
+    const producePayament = produce(dataAdrees, (draft) => {
+      draft.pagamento = pagamento;
+    });
+    setDataAdrees(producePayament);
+    // setDataAdrees((state) => ({
+    //   ...state,
+    //   bairro: state.bairro,
+    //   cep: state.cep,
+    //   cidade: state.cidade,
+    //   complemento: state.complemento,
+    //   numero: state.numero,
+    //   rua: state.rua,
+    //   uf: state.uf,
+    //   pagamento: pagamento,
+    // }));
   }
   return (
     <Container>

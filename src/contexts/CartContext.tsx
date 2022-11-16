@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import {
   CartContextProviderProps,
   CartContextType,
@@ -140,9 +140,7 @@ export function CartContextProvider({ children }: CartContextProviderProps) {
   const [amountCoffeInCart, setAmountCoffeInCart] = useState<CartItem[]>(
     [] as CartItem[]
   );
-  const [dataAdrees, setDataAdrees] = useState<
-    InformationsAdreesAndPayament | {}
-  >({
+  const [dataAdrees, setDataAdrees] = useState<InformationsAdreesAndPayament>({
     pagamento: "",
     bairro: "",
     cep: "",
@@ -151,7 +149,7 @@ export function CartContextProvider({ children }: CartContextProviderProps) {
     numero: "",
     rua: "",
     uf: "",
-  } as InformationsAdreesAndPayament);
+  });
 
   function addToCart(coffeId: string, coffeQuantity: number) {
     const coffeAlreadyExistsInCart = amountCoffeInCart.findIndex(

@@ -26,9 +26,9 @@ export type CartContextType = {
   quantityItensOnHeaderCart: number;
   setAmountCoffeInCart: (value: React.SetStateAction<CartItem[]>) => void;
   setDataAdrees: React.Dispatch<
-    React.SetStateAction<{} | InformationsAdreesAndPayament>
+    React.SetStateAction<InformationsAdreesAndPayament>
   >;
-  dataAdrees: {} | InformationsAdreesAndPayament;
+  dataAdrees: InformationsAdreesAndPayament;
 };
 
 export type CartContextProviderProps = {

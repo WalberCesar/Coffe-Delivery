@@ -19,6 +19,7 @@ import {
 import { FormAddress } from "../../components/FormAddress";
 import { PayamentInformations } from "../../components/PayamentInformations";
 import { useTheme } from "styled-components";
+
 type ErrorsType = {
   errors: {
     [key: string]: {
@@ -62,6 +63,7 @@ export function Checkout() {
       rua: rua,
       uf: uf,
     };
+
     setDataAdrees((state) => ({
       ...state,
       bairro: data.bairro,
